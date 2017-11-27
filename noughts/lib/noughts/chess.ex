@@ -11,14 +11,23 @@ defmodule Noughts.Chess do
     ["_"] ++ initChess(i-1)
   end
 
-  def won([ a, a, a, _, _, _, _, _, _ ]), do: true
-  def won([ _, _, _, a, a, a, _, _, _ ]), do: true
-  def won([ _, _, _, _, _, _, a, a, a ]), do: true
-  def won([ a, _, _, a, _, _, a, _, _ ]), do: true
-  def won([ _, a, _, _, a, _, _, a, _ ]), do: true
-  def won([ _, _, a, _, _, a, _, _, a ]), do: true
-  def won([ a, _, _, _, a, _, _, _, a ]), do: true
-  def won([ _, _, a, _, a, _, a, _, _ ]), do: true
+  def won([ "x", "x", "x", _, _, _, _, _, _ ]), do: true
+  def won([ _, _, _, "x", "x", "x", _, _, _ ]), do: true
+  def won([ _, _, _, _, _, _, "x", "x", "x" ]), do: true
+  def won([ "x", _, _, "x", _, _, "x", _, _ ]), do: true
+  def won([ _, "x", _, _, "x", _, _, "x", _ ]), do: true
+  def won([ _, _, "x", _, _, "x", _, _, "x" ]), do: true
+  def won([ "x", _, _, _, "x", _, _, _, "x" ]), do: true
+  def won([ _, _, "x", _, "x", _, "x", _, _ ]), do: true
+
+  def won([ "o", "o", "o", _, _, _, _, _, _ ]), do: true
+  def won([ _, _, _, "o", "o", "o", _, _, _ ]), do: true
+  def won([ _, _, _, _, _, _, "o", "o", "o" ]), do: true
+  def won([ "o", _, _, "o", _, _, "o", _, _ ]), do: true
+  def won([ _, "o", _, _, "o", _, _, "o", _ ]), do: true
+  def won([ _, _, "o", _, _, "o", _, _, "o" ]), do: true
+  def won([ "o", _, _, _, "o", _, _, _, "o" ]), do: true
+  def won([ _, _, "o", _, "o", _, "o", _, _ ]), do: true
   def won(chessboard) do
     isFull(Enum.find(chessboard, fn(x) -> x == "_" end))
   end

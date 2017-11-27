@@ -21,7 +21,7 @@ defmodule Noughts.Controller do
     state = receive do
       { from, name, node, :new_game } ->
 	Process.monitor(from)
-	put_in state, [:pid_reg, from], {name, node}
+	state = put_in state, [:pid_reg, from], {name, node}
 	find_match(state, state.waiting, {name, node})
 	
       { name, node, chessboard, :make_move} ->
@@ -39,14 +39,13 @@ defmodule Noughts.Controller do
   def find_match(state, [], player) do
     send player, {:matching}
     IO.puts "A new player is waiting in queue!"
-    put_in(state[:waiting], player)
-    IO.puts "#{inspect state.waiting}"
+    put_in(state[:waiting], [player])
     |> put_in([:clients, player], {})
   end
 
   def find_match(state, [player_one], player_two) do
     pid = SubSupervisor.new_game([state.counter + 1, player_one, player_two])
-    chessboard = Connector.get_positions(pid)
+    chessboard = Connector.get_chessboard(pid)
     send player_one, {:game_start, chessboard, :true}
     send player_two, {:game_start, chessboard, :false}
     IO.puts "New game #{inspect pid} starts!"
@@ -57,24 +56,24 @@ defmodule Noughts.Controller do
     |> put_in([:waiting], [])
   end
 
-  def make_move(state, :true, player, _chessboard) do
+  def make_move(state, :true, player, chessboard) do
     send player, {:won}
     player_an = state.clients[player]
-    send player_an, {:lost}
+    send player_an, {:lost, chessboard}
     clean_up(state, player, player_an)
   end
 
   def make_move(state, :false, player, chessboard) do
-    next_mover = Connector.update_game(state.games[player], {player, chessboard})
+    Connector.update_game(state.games[player], {chessboard})
     send player, {:received}
-    send next_mover, {:your_turn, chessboard}
+    send state.clients[player], {:your_turn, chessboard}
     state
   end
 
-  def make_move(state, :tie, player, _chessboard) do
+  def make_move(state, :tie, player, chessboard) do
     send player, {:tie}
     player_an = state.clients[player]
-    send player_an, {:tie}
+    send player_an, {:tie, chessboard}
     clean_up(state, player, player_an)
   end
 

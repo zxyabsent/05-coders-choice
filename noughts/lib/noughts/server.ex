@@ -18,13 +18,12 @@ defmodule Noughts.Server do
     { :ok, { value, game_id } }
   end
 
-  def handle_call({:get_value}, _from, {state, game_id}) do
-    { :reply, state, {state, game_id} }
+  def handle_call({:get_board}, _from, {state, game_id}) do
+    { :reply, state.board, {state, game_id} }
   end
 
-  def handle_call({:update_value, {player, cb}}, _from, {state, game_id}) do
-    op = find_opponent(state.player_one == player, state)
-    { :reply, op, {%Noughts.Game{state | board: cb}, game_id} }
+  def handle_cast({:update_value, {cb}}, {state, game_id}) do
+    { :noreply, {%Noughts.Game{state | board: cb}, game_id} }
   end
 
   def terminate(_reason, {state, game_id}) do

@@ -4,16 +4,20 @@ defmodule Noughts.Connector do
   #####
   # Game Server External API
   
-  def start_link(game_info) do
-    GenServer.start_link(Noughts.Server, game_info)
+  def start_link([], gameinfo) do
+    GenServer.start_link(Noughts.Server, gameinfo)
   end
 
-  def get_positions(game) do
-    GenServer.call(game, { :get_value })
+  def get_chessboard(game) do
+    GenServer.call(game, { :get_board })
+  end
+
+  def update_game({}, _value) do
+    :bad_argument
   end
 
   def update_game(game, value) do
-    GenServer.call(game, { :update_value, value})
+    GenServer.cast(game, { :update_value, value})
   end
 
 end
