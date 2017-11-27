@@ -1,0 +1,14 @@
+defmodule Noughts.Chess do
+  def chessboard do
+    initChess(9)
+  end
+  
+  def initChess(0) do
+    []
+  end
+
+  def initChess(i) do
+    ["_"] ++ initChess(i-1)
+  end
+
+end

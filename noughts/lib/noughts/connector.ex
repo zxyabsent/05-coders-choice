@@ -4,8 +4,8 @@ defmodule Noughts.Connector do
   #####
   # Game Server External API
   
-  def start_link(player_id) do
-    GenServer.start_link(Noughts.Server, player_id)
+  def start_link(game_info) do
+    GenServer.start_link(Noughts.Server, game_info)
   end
 
   def get_positions(game) do
@@ -13,7 +13,7 @@ defmodule Noughts.Connector do
   end
 
   def update_game(game, value) do
-    GenServer.cast(game, { :update_value, value})
+    GenServer.call(game, { :update_value, value})
   end
 
 end

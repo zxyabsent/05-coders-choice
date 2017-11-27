@@ -9,8 +9,8 @@ defmodule Noughts.SubSupervisor do
     Supervisor.init([Noughts.Connector], strategy: :simple_one_for_one)
   end
 
-  def new_game() do
-    { :ok, pid } = Supervisor.start_child(__MODULE__, [])
+  def new_game(game_info) do
+    { :ok, pid } = Supervisor.start_child(__MODULE__, [game_info])
     pid
   end
 
